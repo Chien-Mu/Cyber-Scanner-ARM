@@ -60,7 +60,7 @@ unix:!macx{
     LIBS += -L/home/levy/raspi/sysroot/usr/lib -lwiringPi
 
     #Cross Compile
-    target.path = /home/pi/test2
+    target.path = /home/pi/test
     INSTALLS += target
 }
 win32{
