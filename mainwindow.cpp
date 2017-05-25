@@ -32,11 +32,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
 
     //列出相機
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    qDebug() << cameras[0].deviceName(); //設備id
-    qDebug() << cameras[0].description(); //設備名稱
+    //qDebug() << cameras[0].deviceName(); //設備id
+    //qDebug() << cameras[0].description(); //設備名稱
 
     //camera set
-    camera->setCamera(cameras[0].deviceName().toLocal8Bit());
+    //camera->setCamera(cameras[0].deviceName().toLocal8Bit());
+    camera->setCamera("");
     connect(camera,SIGNAL(Error(int,QCameraImageCapture::Error,QString)),
             this,SLOT(displayCaptureError(int,QCameraImageCapture::Error,QString)));
     camera->CameraStrat();

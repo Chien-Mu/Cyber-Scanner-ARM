@@ -25,6 +25,7 @@ private:
     MainWindow *ref;
     bool quit;
     QByteArray scan(QImage *currentImage);
+    QPoint point_null;
     bool isCollecting;
     QByteArray currentSN;
     int length_SN;

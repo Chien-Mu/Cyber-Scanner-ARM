@@ -8,7 +8,10 @@
 #define SCANTOTAL 2
 
 struct INFO_SN{
-    QRect rect;
+    QPoint A;
+    QPoint B;
+    QPoint C;
+    QPoint D;
     QByteArray text;
 };
 

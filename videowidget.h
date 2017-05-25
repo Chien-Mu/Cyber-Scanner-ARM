@@ -26,9 +26,7 @@ private:
     float Wratio;
     float Hratio;
     QPen pen;
-    QVector<QRect> rects;
-    QRect rect_null;
-    QVector<QString> SN;
+    INFO info;
     QVector<QPoint> point_SN;
     QPoint point_null;
 

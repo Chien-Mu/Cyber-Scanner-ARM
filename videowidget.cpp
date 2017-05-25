@@ -11,17 +11,17 @@ VideoWidget::VideoWidget(int W, int H, QWidget *parent) : QWidget(parent)
     this->isPush = true;
     this->isdraw = false;
 
-    rect_null.setX(0);
-    rect_null.setY(0);
-    rect_null.setWidth(0);
-    rect_null.setHeight(0);
     point_null.setX(0);
     point_null.setY(0);
     for(int i=0;i<SCANTOTAL;i++){
-        this->rects.push_back(rect_null);
-        this->SN.push_back("");
         this->point_SN.push_back(point_null);
+        info.SN[i].text = "";
+        info.SN[i].A = point_null;
+        info.SN[i].B = point_null;
+        info.SN[i].C = point_null;
+        info.SN[i].D = point_null;
     }
+    info.total = 0;
 
     surface = new MyVideoSurface(this,W,H);
     this->setFixedSize(640,480); //如果沒設畫板大小，可能顯示會有問題。
@@ -40,19 +40,44 @@ void VideoWidget::draw(INFO info){
         continue;
 
     for(int i=0;i<SCANTOTAL && !isdraw;i++){
-        if(i<info.total || !info.SN[i].rect.isNull() || !info.SN[i].rect.isEmpty()){
-            this->rects[i] = QRect(info.SN[i].rect.x()*Wratio,
-                                   info.SN[i].rect.y()*Hratio,
-                                   info.SN[i].rect.width()*Wratio,
-                                   info.SN[i].rect.height()*Hratio);
-            this->SN[i] = info.SN[i].text;
-            this->point_SN[i] = QPoint(rects[i].x(),rects[i].y()-10);
+        if(i<info.total || !info.SN[i].A.isNull()){
+            this->info.SN[i].A.setX(info.SN[i].A.x()*Wratio);
+            this->info.SN[i].A.setY(info.SN[i].A.y()*Hratio);
+            this->info.SN[i].B.setX(info.SN[i].B.x()*Wratio);
+            this->info.SN[i].B.setY(info.SN[i].B.y()*Hratio);
+            this->info.SN[i].C.setX(info.SN[i].C.x()*Wratio);
+            this->info.SN[i].C.setY(info.SN[i].C.y()*Hratio);
+            this->info.SN[i].D.setX(info.SN[i].D.x()*Wratio);
+            this->info.SN[i].D.setY(info.SN[i].D.y()*Hratio);
+            this->info.SN[i].text = info.SN[i].text;
+
+            //找XY相加最小的，找出左上角，並顯示SN
+            int min = this->info.SN[i].A.x() + this->info.SN[i].A.y();
+            this->point_SN[i] = QPoint(this->info.SN[i].A.x(),this->info.SN[i].A.y());
+            if(min > (this->info.SN[i].B.x() + this->info.SN[i].B.y())){
+                min = this->info.SN[i].B.x() + this->info.SN[i].B.y();
+                this->point_SN[i] = QPoint(this->info.SN[i].B.x(),this->info.SN[i].B.y());
+            }
+            if(min > (this->info.SN[i].C.x() + this->info.SN[i].C.y())){
+                min = this->info.SN[i].C.x() + this->info.SN[i].C.y();
+                this->point_SN[i] = QPoint(this->info.SN[i].C.x(),this->info.SN[i].C.y());
+            }
+            if(min > (this->info.SN[i].D.x() + this->info.SN[i].D.y())){
+                min = this->info.SN[i].D.x() + this->info.SN[i].D.y();
+                this->point_SN[i] = QPoint(this->info.SN[i].D.x(),this->info.SN[i].D.y());
+            }
+            this->point_SN[i].setY(this->point_SN[i].y()-10);
+
         }else{
-            this->rects[i] = rect_null;
-            this->SN[i] = "";
+            this->info.SN[i].A = point_null;
+            this->info.SN[i].B = point_null;
+            this->info.SN[i].C = point_null;
+            this->info.SN[i].D = point_null;
+            this->info.SN[i].text = "";
             this->point_SN[i] = point_null;
         }
     }
+    this->info.total = info.total;
 
     isPush = false;
 }
@@ -78,9 +103,16 @@ void VideoWidget::paintEvent(QPaintEvent *event)
         painter.setPen(pen);
         if(!isPush){
             isdraw = true;
-            painter.drawRects(rects); //在畫上矩形
-            painter.drawText(point_SN[0],SN[0]);
-            painter.drawText(point_SN[1],SN[1]);
+            if(info.total != 0)
+                for(int i=0;i<SCANTOTAL;i++){
+                    //在畫任意四邊形
+                    painter.drawLine(info.SN[i].A,info.SN[i].B);
+                    painter.drawLine(info.SN[i].B,info.SN[i].D);
+                    painter.drawLine(info.SN[i].D,info.SN[i].C);
+                    painter.drawLine(info.SN[i].C,info.SN[i].A);
+                    //畫SN
+                    painter.drawText(point_SN[i],info.SN[i].text);
+                }
             isdraw = false;
         }
 
