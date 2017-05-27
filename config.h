@@ -20,6 +20,7 @@ public:
     int get_length_SN();
     int get_delay_loop();
     int get_delay_dmtx();
+    int get_scanTimout();
 
     //com
     QString get_COM();

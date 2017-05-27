@@ -96,6 +96,8 @@ void Config::getConfig(){
             ui->cb_delay_loop->setCurrentText(line.mid(4,line.length()));
         }else if(item == "DED"){
             ui->cb_delay_dmtx->setCurrentText(line.mid(4,line.length()));
+        }else if(item == "TMO"){
+            ui->cb_scanTimeout->setCurrentText(line.mid(4,line.length()));
         }else if(item == "DEP"){
             ui->cb_gpio_delay->setCurrentText(line.mid(4,line.length()));
         }
@@ -116,6 +118,7 @@ void Config::setConfig(){
     out << "LSN=" + QString::number(get_length_SN()) + "\n";
     out << "DEL=" + QString::number(get_delay_loop()) + "\n";
     out << "DED=" + QString::number(get_delay_dmtx()) + "\n";
+    out << "TMO=" + QString::number(get_scanTimout()) + "\n";
 
     out << "COM=" + get_COM() + "\n";
     out << "BAR=" + QString::number(get_Baud()) + "\n";
@@ -174,11 +177,14 @@ void Config::setUI(){
         ui->cb_delay_loop->addItem(QString::number(i));
         ui->cb_gpio_delay->addItem(QString::number(i)); //gpio
     }
+    for(int i=0;i<30;i++)
+        ui->cb_scanTimeout->addItem(QString::number(i));
     //default
     ui->cb_length_SN->setCurrentText(QString::number(15));
     ui->cb_delay_dmtx->setCurrentText(QString::number(200));
     ui->cb_delay_loop->setCurrentText(QString::number(0));
     ui->cb_gpio_delay->setCurrentText(QString::number(300));
+    ui->cb_scanTimeout->setCurrentText(QString::number(8));
 }
 
 void Config::closeWindow(){
@@ -188,6 +194,7 @@ void Config::closeWindow(){
 int Config::get_length_SN(){ return ui->cb_length_SN->currentText().toInt(); }
 int Config::get_delay_loop(){ return ui->cb_delay_loop->currentText().toInt(); }
 int Config::get_delay_dmtx(){ return ui->cb_delay_dmtx->currentText().toInt(); }
+int Config::get_scanTimout(){ return ui->cb_scanTimeout->currentText().toInt(); }
 
 QString Config::get_COM(){ return ui->cb_SP->currentText(); }
 int Config::get_Baud(){ return ui->cb_Baud->currentData().toInt(); }

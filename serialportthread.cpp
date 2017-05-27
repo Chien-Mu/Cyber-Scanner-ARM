@@ -80,7 +80,7 @@ void SerialPortThread::run(){
         }else
             emit status(">.. Sent successfully."); //sended
 
-        emit END();
+        emit END(); //告知已傳出成功
         mutex.unlock();
     }
 

@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     connect(scanner,SIGNAL(throwSN(QByteArray)),com,SLOT(serial_write(QByteArray)));
     connect(scanner,SIGNAL(started()),this,SLOT(isStart()),Qt::QueuedConnection);
     connect(scanner,SIGNAL(finished()),this,SLOT(isStart()),Qt::QueuedConnection);
+    connect(scanner,SIGNAL(timeout(QString)),this,SLOT(setStatus(QString))); //timeout 訊息
 
     //GPIO
     gpio = new GPIO;
@@ -68,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     connect(gpio,SIGNAL(Collect(QString)),this,SLOT(setStatus(QString)),Qt::QueuedConnection);
     connect(gpio,SIGNAL(started()),this,SLOT(isStart()),Qt::QueuedConnection);
     connect(gpio,SIGNAL(finished()),this,SLOT(isStart()),Qt::QueuedConnection);
+    connect(scanner,SIGNAL(timeout()),gpio,SLOT(CollectEND())); //Scanner timeout,觸發 CollectEND()
 
     //initialization
     Start();
@@ -138,7 +140,8 @@ bool MainWindow::Start(){
     //scanner
     scanner->setScan(config->get_length_SN(),
                      config->get_delay_loop(),
-                     config->get_delay_dmtx());
+                     config->get_delay_dmtx(),
+                     config->get_scanTimout());
     scanner->start();
 
     return true;

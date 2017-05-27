@@ -8,6 +8,11 @@ scanthread::scanthread(MainWindow *ref)
     this->isCollecting = false;
     point_null.setX(0);
     point_null.setY(0);
+
+    //timeout object
+    timer = new QTimer;
+    connect(timer,SIGNAL(timeout()),this,SLOT(timeoutProcess()));
+    timer->setSingleShot(true); //不使用循環觸發
 }
 
 void scanthread::stop(){
@@ -16,13 +21,24 @@ void scanthread::stop(){
 
 void scanthread::Collect(QString value){
     Q_UNUSED(value);
-    this->isCollecting = true;
+
+    this->isCollecting = true;  //要求收集
+
+    if(timeoutNum != 0)         //timeoutNum 設定0則取消此機制
+        timer->start(timeoutNum*1000);
 }
 
-void scanthread::setScan(int length_SN,int delay_loop,int delay_dmtx){
+void scanthread::timeoutProcess(){
+    this->isCollecting = false; //取消收集(傳送)
+    emit timeout();
+    emit timeout("X.. Scanning -> Timeout.");
+}
+
+void scanthread::setScan(int length_SN,int delay_loop,int delay_dmtx,int timeoutNum){
     this->length_SN = length_SN;
     this->delay_loop = delay_loop;
     this->delay_dmtx = delay_dmtx;
+    this->timeoutNum = timeoutNum;
 }
 
 void scanthread::run(){
@@ -41,7 +57,9 @@ void scanthread::run(){
         if(!quit){
             this->currentSN = scan(currentImage);
 
+            //要求收集成立、且條碼長度符合，才會結束收集 並傳出此次條碼
             if(isCollecting && currentSN.length() == length_SN){
+                timer->stop(); //已成功，所以取消 timeout 計數
                 this->isCollecting = false;
                 emit throwSN(this->currentSN);
             }

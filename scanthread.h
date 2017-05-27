@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <QImage>
+#include <QTimer>
 #include <dmtx.h>
 
 #include "mainwindow.h"
@@ -14,7 +15,7 @@ class scanthread : public QThread
     Q_OBJECT
 public:
     scanthread(MainWindow *ref);
-    void setScan(int length_SN,int delay_loop,int delay_dmtx);
+    void setScan(int length_SN, int delay_loop, int delay_dmtx, int timeoutNum);
     void run();
     void stop();
 
@@ -31,10 +32,17 @@ private:
     int length_SN;
     int delay_loop;
     int delay_dmtx;
+    QTimer *timer;
+    unsigned timeoutNum;
+
+private slots:
+    void timeoutProcess();
 
 signals:
     void throwInfo(const INFO value);
     void throwSN(QByteArray SN);
+    void timeout();
+    void timeout(QString value);
 };
 
 #endif // SCANTHREAD_H

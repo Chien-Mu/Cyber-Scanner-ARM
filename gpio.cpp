@@ -26,7 +26,7 @@ void GPIO::setGPIO(int delay_gpio){
 }
 
 void GPIO::CollectEND(){
-    this->isCollect = false;
+    this->isCollect = false;    //關閉收尋狀態(開啟要求)
 }
 
 void GPIO::stop(){
@@ -43,8 +43,8 @@ void GPIO::run(){
     }
 
     while(!quit){
-        if(digitalRead(BUTTON) == 1 && !isCollect){
-            emit Collect(">.. GPIO -> Scanning ->");
+        if(digitalRead(BUTTON) == 1 && !isCollect){     //如果沒有在收集中
+            emit Collect(">.. GPIO -> Scanning ->");    //發出收集訊號要求條碼傳出
             this->isCollect = true;
         }
         msleep(delay_gpio);
