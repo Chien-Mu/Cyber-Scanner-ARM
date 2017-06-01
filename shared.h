@@ -5,7 +5,7 @@
 #include <QDateTime>
 #include <QRect>
 #include <QMetaType>
-#define SCANTOTAL 2
+#define SCANTOTAL 1
 
 struct INFO_SN{
     QPoint A;
