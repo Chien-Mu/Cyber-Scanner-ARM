@@ -33,9 +33,13 @@ public:
     //gpio
     int get_delay_gpio();
 
+    //ROI
+    QRect get_ROI();
+
 public slots:
     void closeWindow();
     void setConfig(); //寫入檔案
+    void saveROI(QRect ROI);
 
 private:
     Ui::Config *ui;
@@ -45,6 +49,7 @@ private:
     void setUI();
     void getSerialInfo();
     void getConfig(); //讀取檔案
+    QRect ROI;  //ROI 統一由這裡記錄著
 };
 
 #endif // CONFIG_H

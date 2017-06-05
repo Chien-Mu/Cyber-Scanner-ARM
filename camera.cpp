@@ -42,6 +42,9 @@ void Camera::setCamera(QByteArray deviceName){
     //error
     connect(imageCapture,SIGNAL(error(int,QCameraImageCapture::Error,QString)),
             this,SIGNAL(Error(int,QCameraImageCapture::Error,QString)));
+
+    //傳出在畫面上設定的 ROI Rect
+    connect(videoWidget,SIGNAL(throwROI_Rect(QRect)),this,SIGNAL(throwROI_Rect(QRect)));
 }
 
 QImage Camera::getCurrentImage(){
@@ -52,6 +55,10 @@ QImage Camera::getCurrentImage(){
 void Camera::drawVideoWidget(INFO info){
     videoWidget->lock();
     videoWidget->draw(info);
+}
+
+void Camera::readROI(QRect ROI){
+    videoWidget->readROI(ROI);
 }
 
 void Camera::CameraStrat(){

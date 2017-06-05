@@ -16,6 +16,7 @@ class scanthread : public QThread
 public:
     scanthread(MainWindow *ref);
     void setScan(int length_SN, int delay_loop, int delay_dmtx, int timeoutNum);
+    void setROI(QRect ROI,bool enable);
     void run();
     void stop();
 
@@ -34,6 +35,9 @@ private:
     int delay_dmtx;
     QTimer *timer;
     unsigned timeoutNum;
+    QRect ROI;
+    bool enableROI;
+
 
 private slots:
     void timeoutProcess();

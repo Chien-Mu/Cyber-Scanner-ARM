@@ -1,5 +1,6 @@
 ﻿#include "videowidget.h"
 #include <QDebug>
+#include <QMouseEvent>
 
 VideoWidget::VideoWidget(int W, int H, QWidget *parent) : QWidget(parent)
 {
@@ -41,14 +42,14 @@ void VideoWidget::draw(INFO info){
 
     for(int i=0;i<SCANTOTAL && !isdraw;i++){
         if(i<info.total || !info.SN[i].A.isNull()){
-            this->info.SN[i].A.setX(info.SN[i].A.x()*Wratio);
-            this->info.SN[i].A.setY(info.SN[i].A.y()*Hratio);
-            this->info.SN[i].B.setX(info.SN[i].B.x()*Wratio);
-            this->info.SN[i].B.setY(info.SN[i].B.y()*Hratio);
-            this->info.SN[i].C.setX(info.SN[i].C.x()*Wratio);
-            this->info.SN[i].C.setY(info.SN[i].C.y()*Hratio);
-            this->info.SN[i].D.setX(info.SN[i].D.x()*Wratio);
-            this->info.SN[i].D.setY(info.SN[i].D.y()*Hratio);
+            this->info.SN[i].A.setX( (info.SN[i].A.x()*Wratio) + this->paintROI.ROI.x());
+            this->info.SN[i].A.setY( (info.SN[i].A.y()*Hratio) + this->paintROI.ROI.y());
+            this->info.SN[i].B.setX( (info.SN[i].B.x()*Wratio) + this->paintROI.ROI.x());
+            this->info.SN[i].B.setY( (info.SN[i].B.y()*Hratio) + this->paintROI.ROI.y());
+            this->info.SN[i].C.setX( (info.SN[i].C.x()*Wratio) + this->paintROI.ROI.x());
+            this->info.SN[i].C.setY( (info.SN[i].C.y()*Hratio) + this->paintROI.ROI.y());
+            this->info.SN[i].D.setX( (info.SN[i].D.x()*Wratio) + this->paintROI.ROI.x());
+            this->info.SN[i].D.setY( (info.SN[i].D.y()*Hratio) + this->paintROI.ROI.y());
             this->info.SN[i].text = info.SN[i].text;
 
             //找XY相加最小的，找出左上角，並顯示SN
@@ -97,7 +98,13 @@ void VideoWidget::paintEvent(QPaintEvent *event)
         painter.setPen(pen);
         painter.drawLine(0,240,640,240);
         painter.drawLine(320,0,320,480);
+        pen.setBrush((Qt::green));
+        pen.setWidth(2);
+        painter.setPen(pen);
+        painter.drawText(this->paintROI.ROI.x(),this->paintROI.ROI.y()-5,"ROI");
+        painter.drawRect(this->paintROI.ROI);
 
+        //draw detetion
         pen.setBrush(Qt::red);
         pen.setWidth(4);
         painter.setPen(pen);
@@ -119,4 +126,29 @@ void VideoWidget::paintEvent(QPaintEvent *event)
         painter.end();
         surface->Drawing(false);
     }
+}
+
+void VideoWidget::readROI(QRect ROI){
+    this->paintROI.ROI = ROI;
+}
+
+void VideoWidget::mousePressEvent(QMouseEvent *event){
+    if(event->button() == Qt::LeftButton){
+        this->paintROI.MP = event->pos(); //default
+        this->paintROI.PP = event->pos();
+    }
+}
+
+void VideoWidget::mouseMoveEvent(QMouseEvent *event){
+    this->paintROI.MP = event->pos();
+
+    this->paintROI.ROI.setX(this->paintROI.PP.x());
+    this->paintROI.ROI.setY(this->paintROI.PP.y());
+    this->paintROI.ROI.setWidth(this->paintROI.MP.x() - this->paintROI.PP.x());
+    this->paintROI.ROI.setHeight(this->paintROI.MP.y() - this->paintROI.PP.y());
+}
+
+void VideoWidget::mouseReleaseEvent(QMouseEvent *event){
+    if(event->button() == Qt::LeftButton)
+        emit throwROI_Rect(paintROI.ROI);  //sent ROI Rect
 }

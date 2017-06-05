@@ -100,6 +100,14 @@ void Config::getConfig(){
             ui->cb_scanTimeout->setCurrentText(line.mid(4,line.length()));
         }else if(item == "DEP"){
             ui->cb_gpio_delay->setCurrentText(line.mid(4,line.length()));
+        }else if(item == "ROX"){
+            this->ROI.setX(line.mid(4,line.length()).toInt());
+        }else if(item == "ROY"){
+            this->ROI.setY(line.mid(4,line.length()).toInt());
+        }else if(item == "ROW"){
+            this->ROI.setWidth(line.mid(4,line.length()).toInt());
+        }else if(item == "ROH"){
+            this->ROI.setHeight(line.mid(4,line.length()).toInt());
         }
     }
 
@@ -129,6 +137,10 @@ void Config::setConfig(){
 
     out << "DEP=" + QString::number(get_delay_gpio()) + "\n";
 
+    out << "ROX=" + QString::number(this->ROI.x()) + "\n";
+    out << "ROY=" + QString::number(this->ROI.y()) + "\n";
+    out << "ROW=" + QString::number(this->ROI.width()) + "\n";
+    out << "ROH=" + QString::number(this->ROI.height()) + "\n";
     file.close();
 }
 
@@ -187,6 +199,10 @@ void Config::setUI(){
     ui->cb_scanTimeout->setCurrentText(QString::number(8));
 }
 
+void Config::saveROI(QRect ROI){
+    this->ROI = ROI;
+}
+
 void Config::closeWindow(){
     this->close();
 }
@@ -204,6 +220,7 @@ int Config::get_StopB(){ return ui->cb_StopBits->currentData().toInt(); }
 int Config::get_FlowC(){ return ui->cb_FlowControl->currentData().toInt(); }
 
 int Config::get_delay_gpio(){ return ui->cb_gpio_delay->currentText().toInt(); }
+QRect Config::get_ROI(){ return this->ROI; }
 
 Config::~Config()
 {

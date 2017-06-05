@@ -6,8 +6,15 @@
 #include "myvideosurface.h"
 #include "shared.h"
 
+struct PaintROI{
+    QPoint PP;  //press point
+    QPoint MP;  //move point
+    QRect ROI;
+};
+
 class VideoWidget : public QWidget
 {
+    Q_OBJECT
 public:
     explicit VideoWidget(int W,int H, QWidget *parent = 0);
     ~VideoWidget();
@@ -15,9 +22,13 @@ public:
     MyVideoSurface *refImageSurface() { return surface; }
     void lock();
     void draw(INFO info);
+    void readROI(QRect ROI);
 
 protected:
     void paintEvent(QPaintEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     MyVideoSurface *surface;
@@ -32,6 +43,11 @@ private:
 
     volatile bool isPush;
     volatile bool isdraw;
+
+    PaintROI paintROI;
+
+signals:
+    void throwROI_Rect(QRect ROI);
 };
 
 #endif // VIDEOWIDGET_H

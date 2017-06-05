@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWin
     shared = new Shared;
     config = new Config;
     connect(this,SIGNAL(closeWindow()),config,SLOT(setConfig()));
+    connect(camera,SIGNAL(throwROI_Rect(QRect)),config,SLOT(saveROI(QRect))); //丟ROI 到 config class 紀錄
+    camera->readROI(config->get_ROI()); //draw txt 中紀錄的 ROI
 
 
     //comport
@@ -142,6 +144,7 @@ bool MainWindow::Start(){
                      config->get_delay_loop(),
                      config->get_delay_dmtx(),
                      config->get_scanTimout());
+    scanner->setROI(config->get_ROI(),true);
     scanner->start();
 
     return true;

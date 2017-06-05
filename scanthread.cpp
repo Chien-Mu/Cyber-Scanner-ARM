@@ -13,6 +13,9 @@ scanthread::scanthread(MainWindow *ref)
     timer = new QTimer;
     connect(timer,SIGNAL(timeout()),this,SLOT(timeoutProcess()));
     timer->setSingleShot(true); //不使用循環觸發
+
+    //ROI
+    this->enableROI = true;
 }
 
 void scanthread::stop(){
@@ -41,6 +44,11 @@ void scanthread::setScan(int length_SN,int delay_loop,int delay_dmtx,int timeout
     this->timeoutNum = timeoutNum;
 }
 
+void scanthread::setROI(QRect ROI, bool enable){
+    this->enableROI = enable;
+    this->ROI = ROI;
+}
+
 void scanthread::run(){
     this->quit = false;
 
@@ -55,7 +63,18 @@ void scanthread::run(){
 
         //scanner
         if(!quit){
-            this->currentSN = scan(currentImage);
+            //ROI
+            if(this->enableROI){
+                float Wratio = (float)640/(float)currentImage->width();
+                float Hratio = (float)480/(float)currentImage->height();
+                QRect R(this->ROI.x()/Wratio,
+                        this->ROI.y()/Hratio,
+                        this->ROI.width()/Wratio,
+                        this->ROI.height()/Hratio);
+                QImage imgROI = currentImage->copy(R); //因為scan() 參數是指標，所以這邊要宣告出來
+                this->currentSN = scan(&imgROI);
+            }else
+                this->currentSN = scan(currentImage);
 
             //要求收集成立、且條碼長度符合，才會結束收集 並傳出此次條碼
             if(isCollecting && currentSN.length() == length_SN){
@@ -85,7 +104,7 @@ QByteArray scanthread::scan(QImage *currentImage){
     p10.X = p01.Y = p11.X = p11.Y = 1.0;
     int p_height;
 
-    dmImg = dmtxImageCreate(currentImage->bits(),currentImage->width(),currentImage->height(),DmtxPack8bppK);
+    dmImg = dmtxImageCreate(currentImage->bits(),currentImage->bytesPerLine(),currentImage->height(),DmtxPack8bppK);
     if(dmImg == NULL)
         return "-1";
 
@@ -99,8 +118,10 @@ QByteArray scanthread::scan(QImage *currentImage){
     //Decode 屬性
     //dmtxDecodeSetProp(dmDec, DmtxPropEdgeMin, 70); //minimum-edge
     //dmtxDecodeSetProp(dmDec, DmtxPropEdgeMax, 220); //maximum-edge
-    //dmtxDecodeSetProp(dmDec, DmtxPropScanGap, 1); //gap
+    //dmtxDecodeSetProp(dmDec, DmtxPropScanGap, 2); //gap
+    //dmtxDecodeSetProp(dmDec, DmtxPropSymbolSize, DmtxSymbolShapeAuto);
     //dmtxDecodeSetProp(dmDec, DmtxPropEdgeThresh, 100); //threshold 越高速度越快
+
 
     // dmtxTimeAdd()再迴圈內定義成找一個條碼時間
     // dmtxTimeAdd()再迴圈外定義成找 ScanLimit 個條碼時間

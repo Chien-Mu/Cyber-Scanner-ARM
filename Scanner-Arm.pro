@@ -45,7 +45,7 @@ FORMS    += mainwindow.ui \
 macx{
     #libdmtx
     INCLUDEPATH += /usr/local/include
-    LIBS += `pkg-config --libs libdmtx`
+    LIBS += /usr/local/lib/libdmtx.dylib
 }
 unix:!macx{
     #preprocessor definition
