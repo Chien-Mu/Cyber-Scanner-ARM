@@ -61,6 +61,10 @@ void Camera::readROI(QRect ROI){
     videoWidget->readROI(ROI);
 }
 
+void Camera::setEnableDraw(bool value){
+    videoWidget->setEnableDraw(value);
+}
+
 void Camera::CameraStrat(){
     cameraDevice->start();
 }

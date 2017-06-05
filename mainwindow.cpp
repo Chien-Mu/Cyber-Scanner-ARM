@@ -147,6 +147,7 @@ bool MainWindow::Start(){
     scanner->setROI(config->get_ROI(),true);
     scanner->start();
 
+    camera->setEnableDraw(false);   //開始後限制畫 ROI
     return true;
 }
 
@@ -162,6 +163,7 @@ void MainWindow::stop(bool isCloseCamera){
         camera->CameraStop();
     }
     //qDebug() << "MainWindow::stop()";
+    camera->setEnableDraw(true); //stop 後才可以畫ROI
 }
 
 QImage* MainWindow::on_Capture(){

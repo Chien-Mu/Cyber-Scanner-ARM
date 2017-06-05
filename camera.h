@@ -20,6 +20,7 @@ public:
     void CameraStrat();
     void CameraStop();
     void readROI(QRect ROI);
+    void setEnableDraw(bool value);
 
     //get
     QWidget *getVideoWidget() { return videoWidget; }

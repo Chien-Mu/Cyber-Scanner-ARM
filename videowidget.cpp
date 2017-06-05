@@ -11,6 +11,7 @@ VideoWidget::VideoWidget(int W, int H, QWidget *parent) : QWidget(parent)
 
     this->isPush = true;
     this->isdraw = false;
+    this->EnableDraw = false;
 
     point_null.setX(0);
     point_null.setY(0);
@@ -30,6 +31,10 @@ VideoWidget::VideoWidget(int W, int H, QWidget *parent) : QWidget(parent)
 
 VideoWidget::~VideoWidget(){
     delete surface;
+}
+
+void VideoWidget::setEnableDraw(bool value){
+    this->EnableDraw = value;
 }
 
 void VideoWidget::lock(){
@@ -133,22 +138,24 @@ void VideoWidget::readROI(QRect ROI){
 }
 
 void VideoWidget::mousePressEvent(QMouseEvent *event){
-    if(event->button() == Qt::LeftButton){
+    if(event->button() == Qt::LeftButton && EnableDraw){
         this->paintROI.MP = event->pos(); //default
         this->paintROI.PP = event->pos();
     }
 }
 
 void VideoWidget::mouseMoveEvent(QMouseEvent *event){
-    this->paintROI.MP = event->pos();
+    if(EnableDraw){
+        this->paintROI.MP = event->pos();
 
-    this->paintROI.ROI.setX(this->paintROI.PP.x());
-    this->paintROI.ROI.setY(this->paintROI.PP.y());
-    this->paintROI.ROI.setWidth(this->paintROI.MP.x() - this->paintROI.PP.x());
-    this->paintROI.ROI.setHeight(this->paintROI.MP.y() - this->paintROI.PP.y());
+        this->paintROI.ROI.setX(this->paintROI.PP.x());
+        this->paintROI.ROI.setY(this->paintROI.PP.y());
+        this->paintROI.ROI.setWidth(this->paintROI.MP.x() - this->paintROI.PP.x());
+        this->paintROI.ROI.setHeight(this->paintROI.MP.y() - this->paintROI.PP.y());
+    }
 }
 
 void VideoWidget::mouseReleaseEvent(QMouseEvent *event){
-    if(event->button() == Qt::LeftButton)
+    if(event->button() == Qt::LeftButton && EnableDraw)
         emit throwROI_Rect(paintROI.ROI);  //sent ROI Rect
 }

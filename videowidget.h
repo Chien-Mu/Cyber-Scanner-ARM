@@ -23,6 +23,7 @@ public:
     void lock();
     void draw(INFO info);
     void readROI(QRect ROI);
+    void setEnableDraw(bool value);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -45,6 +46,7 @@ private:
     volatile bool isdraw;
 
     PaintROI paintROI;
+    bool EnableDraw;
 
 signals:
     void throwROI_Rect(QRect ROI);
