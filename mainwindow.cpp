@@ -120,8 +120,8 @@ void MainWindow::trigerMenu(QAction *act){
 
 bool MainWindow::Start(){
     //CREATE DIR
-    if(!dir.mkpath(QDir::homePath()+"/log"))
-        setStatus("!.. " + QDir::homePath()+"/log -> The dir an not be created.");
+    if(!dir.mkpath(QDir::currentPath() + "/log"))
+        setStatus("!.. " + QDir::currentPath() + "/log -> The dir an not be created.");
     //-------------------------------
 
     //comport
@@ -179,7 +179,7 @@ void MainWindow::setStatus(QString value){
     QString time = shared->getDateTime_print();
 
     //file
-    QString txtPath = QDir::homePath() + "/log/" + shared->getDate() +"_log.txt";
+    QString txtPath = QDir::currentPath() + "/log/" + shared->getDate() +"_log.txt";
     file.setFileName(txtPath);
     if(!file.open(QIODevice::Append|QIODevice::Text))
         QMessageBox::critical(this, tr("Error"), txtPath+ "..does not exist.");

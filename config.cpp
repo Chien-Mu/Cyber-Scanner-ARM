@@ -11,8 +11,8 @@ Config::Config(QWidget *parent) : QWidget(parent),ui(new Ui::Config)
     connect(ui->btn_close,SIGNAL(clicked()),this,SLOT(closeWindow()));
 
     //CREATE DIR
-    if(!dir.mkpath(QDir::homePath()+"/ScannerConfig"))
-        QMessageBox::critical(this,tr("Error"),"!.. " + QDir::homePath()+"/ScannerConfig -> The dir an not be created.");
+    if(!dir.mkpath(QDir::currentPath() + "/ScannerConfig"))
+        QMessageBox::critical(this,tr("Error"),"!.. " + QDir::currentPath() + "/ScannerConfig -> The dir an not be created.");
 
     //驗證器
     validInt = new QIntValidator(this); //限制只能 int
@@ -33,7 +33,7 @@ void Config::getSerialInfo(){
 }
 
 void Config::getConfig(){
-    QString txtPath = QDir::homePath() + "/ScannerConfig/config.txt";
+    QString txtPath = QDir::currentPath() + "/ScannerConfig/config.txt";
     file.setFileName(txtPath);
     if(!file.open(QIODevice::ReadOnly|QIODevice::Text)){
         QMessageBox::critical(this, tr("Error"), txtPath+ "..does not exist.");
@@ -115,7 +115,7 @@ void Config::getConfig(){
 }
 
 void Config::setConfig(){
-    QString txtPath = QDir::homePath() + "/ScannerConfig/config.txt";
+    QString txtPath = QDir::currentPath() + "/ScannerConfig/config.txt";
     file.setFileName(txtPath);
     if(!file.open(QIODevice::WriteOnly|QIODevice::Text)){ //檔案會覆蓋
         QMessageBox::critical(this, tr("Error"), txtPath+ "..does not exist.");
