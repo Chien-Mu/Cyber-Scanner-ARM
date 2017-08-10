@@ -12,7 +12,7 @@ class MyVideoSurface : public QAbstractVideoSurface
 {
     Q_OBJECT
 public:
-    MyVideoSurface(QWidget *widget, int W, int H, QObject *parent = 0);
+    MyVideoSurface(QWidget *widget, QSize widgetSize, QObject *parent = 0); //為了觸發外界的 eventpaint，所以建構子讓 widget 帶進來
 
     QList<QVideoFrame::PixelFormat> supportedPixelFormats(
             QAbstractVideoBuffer::HandleType handleType = QAbstractVideoBuffer::NoHandle) const;
@@ -22,14 +22,14 @@ public:
     void paintImage(QPainter *painter);
     void Drawing(bool isDraw);
     void getlock();
-    QImage getCurrentImage();
+    QImage &getCurrentImage();
 
 private:
     QWidget *widget;
     QVideoFrame currentFrame;
+    QImage currentImage;
     QImage _image;
-    int W;
-    int H;
+    QSize widgetSize;
     volatile bool isDraw;
     volatile bool isGet;
 };

@@ -12,7 +12,6 @@ scanthread *scanner;
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->currentImage_ptr = 0;
 
     //status
     la_status = new QLabel;
@@ -166,10 +165,8 @@ void MainWindow::stop(bool isCloseCamera){
     camera->setEnableDraw(true); //stop 後才可以畫ROI
 }
 
-QImage* MainWindow::on_Capture(){
-    this->currentImage =  camera->getCurrentImage(); //by value
-    this->currentImage_ptr = &this->currentImage;
-    return currentImage_ptr;
+QImage &MainWindow::on_Capture(){
+    return camera->getCurrentImage(); //by MyVideoSurface 的 currentImage reference
 }
 
 void MainWindow::setStatus(QString value){

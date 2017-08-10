@@ -16,7 +16,7 @@ class VideoWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit VideoWidget(int W,int H, QWidget *parent = 0);
+    explicit VideoWidget(QSize imageSize, QWidget *parent = 0);
     ~VideoWidget();
     QAbstractVideoSurface *refVideoSurface() const { return surface; }
     MyVideoSurface *refImageSurface() { return surface; }
@@ -33,8 +33,7 @@ protected:
 
 private:
     MyVideoSurface *surface;
-    int W;
-    int H;
+    QSize imageSize;
     float Wratio;
     float Hratio;
     QPen pen;

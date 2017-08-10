@@ -10,8 +10,8 @@ Camera::Camera()
      * 640X480
      * 1280 X 720
      * 5.0MP (軟體增強處理) */
-    this->W = 1280;
-    this->H = 720;
+    this->imageSize.setWidth(IMAGE_WIDTH);
+    this->imageSize.setHeight(IMAGE_HEIGTH);
 }
 
 void Camera::setCamera(QByteArray deviceName){
@@ -23,7 +23,7 @@ void Camera::setCamera(QByteArray deviceName){
     connect(cameraDevice,SIGNAL(error(QCamera::Error)),this,SLOT(on_cameraError()));
 
     //viewfinder
-    videoWidget = new VideoWidget(W,H);
+    videoWidget = new VideoWidget(imageSize);
     cameraDevice->setViewfinder(videoWidget->refVideoSurface());
 
     //設定捕捉模式
@@ -36,7 +36,7 @@ void Camera::setCamera(QByteArray deviceName){
     //設定相機抓傳入時解析度
     QImageEncoderSettings imageSettings;
     //imageSettings.setCodec("image/jpeg");
-    imageSettings.setResolution(W,H);
+    imageSettings.setResolution(imageSize);
     imageCapture->setEncodingSettings(imageSettings); //匯入設定影像編碼選項
 
     //error
@@ -47,7 +47,7 @@ void Camera::setCamera(QByteArray deviceName){
     connect(videoWidget,SIGNAL(throwROI_Rect(QRect)),this,SIGNAL(throwROI_Rect(QRect)));
 }
 
-QImage Camera::getCurrentImage(){
+QImage &Camera::getCurrentImage(){
     videoWidget->refImageSurface()->getlock();
     return videoWidget->refImageSurface()->getCurrentImage();
 }

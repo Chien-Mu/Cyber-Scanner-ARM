@@ -24,7 +24,7 @@ public:
 
     //get
     QWidget *getVideoWidget() { return videoWidget; }
-    QImage getCurrentImage();
+    QImage &getCurrentImage();
 
 public slots:
     void drawVideoWidget(INFO info);
@@ -38,8 +38,7 @@ private:
     VideoWidget *videoWidget;
 
     //屬性
-    int W;
-    int H;
+    QSize imageSize;
 
 private slots:
     void on_cameraError();

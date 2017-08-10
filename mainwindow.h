@@ -27,9 +27,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     bool Start();
-    QImage *on_Capture();
-    QImage currentImage;
-    QImage *currentImage_ptr;
+    QImage &on_Capture();
     void stop(bool isCloseCamera = false);
 
 public slots:

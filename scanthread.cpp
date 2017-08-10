@@ -53,10 +53,10 @@ void scanthread::run(){
     this->quit = false;
 
     while(!quit){
-        QImage *currentImage = ref->on_Capture();
+        QImage currentImage = ref->on_Capture(); //by MyVideoSurface 的 currentImage value(copy)
 
         //check
-        if(currentImage->isNull()){
+        if(currentImage.isNull()){
             msleep(200);
             continue;
         }
@@ -65,16 +65,16 @@ void scanthread::run(){
         if(!quit){
             //ROI
             if(this->enableROI){
-                float Wratio = (float)640/(float)currentImage->width();
-                float Hratio = (float)480/(float)currentImage->height();
+                float Wratio = (float)PAINT_WIDTH/(float)currentImage.width();
+                float Hratio = (float)PAINT_HEIGTH/(float)currentImage.height();
                 QRect R(this->ROI.x()/Wratio,
                         this->ROI.y()/Hratio,
                         this->ROI.width()/Wratio,
                         this->ROI.height()/Hratio);
-                QImage imgROI = currentImage->copy(R); //因為scan() 參數是指標，所以這邊要宣告出來
+                QImage imgROI = currentImage.copy(R); //因為scan() 參數是指標，所以這邊要宣告出來
                 this->currentSN = scan(&imgROI);
             }else
-                this->currentSN = scan(currentImage);
+                this->currentSN = scan(&currentImage);
 
             //要求收集成立、且條碼長度符合，才會結束收集 並傳出此次條碼
             if(isCollecting && currentSN.length() == length_SN){
