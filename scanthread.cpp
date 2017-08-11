@@ -53,7 +53,10 @@ void scanthread::run(){
     this->quit = false;
 
     while(!quit){
-        QImage currentImage = ref->on_Capture(); //by MyVideoSurface 的 currentImage value(copy)
+        QImage currentImage = ref->on_Capture().copy(); //by MyVideoSurface 的 currentImage value(copy)
+        /* 這裡正常來說 不用加 .copy()
+         * 但因為QImage的機制，兩者來自不同 thread，image = image 就會導致QImage 內部記憶體位置一樣
+         */
 
         //check
         if(currentImage.isNull()){
