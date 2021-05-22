@@ -12,6 +12,8 @@ Implement image recognition DataMatrix on Embedded System
 
 # Screenshots
 
+![image](https://github.com/Chien-Mu/Dmtx-Scanner/blob/master/resource/1.gif)
+
 * Qt 5.8.0
 * Raspberry Pi 2
 * Logtech Web Cam
