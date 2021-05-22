@@ -8,8 +8,8 @@ About::About(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->btn_close,SIGNAL(clicked()),this,SLOT(on_close()));
 
-    QPixmap img(":/img/Logo.png");
-    ui->la_show->setPixmap(img);
+    //QPixmap img(":/img/Logo.png");
+    //ui->la_show->setPixmap(img);
 }
 
 void About::on_close(){

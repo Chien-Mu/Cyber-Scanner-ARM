@@ -1,10 +1,17 @@
-# README #
+# Dmtx-Scanner
 
-使用在 Raspberry Pi 2 上的 DataMatrix Scanner
-可由 GPIO pin 12 控制 SerialPort 輸出條碼
+Implement image recognition DataMatrix on Embedded System
 
-### 使用版本 ###
+# Features
 
-* 為 Qt 5.8.0 架構
-* 需要配合 WebCam
-* Raspberry 需要設定不休眠
+* Display the position of the data matrix in real time and parse the character groups
+* The ROI area can be set on the GUI
+* Universal webcam can be used as an image capture device
+* Can use RS232 to transmit recognized character groups
+* Can use CPIO pin to control the parse time point
+
+# Screenshots
+
+* Qt 5.8.0
+* Raspberry Pi 2
+* Logtech Web Cam
